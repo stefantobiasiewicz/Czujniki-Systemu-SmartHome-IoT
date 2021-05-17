@@ -1,8 +1,8 @@
 #include <Arduino.h>
-
 #include "Wire.h"
-
 #include "Adafruit_BMP280.h"
+
+#include "../lib/sensor.h"
 
 Adafruit_BMP280 bmp; // I2C
 //Adafruit_BMP280 bmp(BMP_CS); // hardware SPI
