@@ -1,0 +1,43 @@
+
+Kazdy z czujników pracuje na mszynie stanów. 
+np.
+(odczyt z czujnika) -> (wysyłanie danych) -> (idle)+(delay) 
+        ^                                           |
+        +-------------------------------------------+
+
+#todo zakodować jakąś maszyne stanów 
+
+Ogarnięcie topologi systemu czujników i dość prosta definicja funkcjonalności 
+np.
+    Kady czujnik ma zmienną odpowiadającą za jego sprzętowe mozliwości
+    W programie głównym mozna odczytywać te fukcjonalności podczas parowania i tworzyć profil urządzenia.
+
+    (urządzenie U1)  ---+-----> (funkcjonalność mierzenia temperatury) 
+                        |
+                        +-----> (funkcjonalność mierzenia ciśnienia)
+                        |
+                        +-----> (funkcjonalność przełącznika)
+
+    w programie centralnym:
+
+                 (odczyt funkcjonalmności urządzenia U1) 
+                                   |
+                                   |
+                                   |
+                   (sporządzenie profilu urządzenia U1)
+                                   |
+                                   |
+                                   |
+                           (w GUI centralki)
+                                   |
+                                   |
+                                   |
+                             (urządzenie U1)
+                                   |
+                                   |
+                                   |
+           +-----------------------+------------------------+
+           |                       |                        |
+           |                       |                        | 
+      (label z temp)          (label z hum)          (przełacznik switch)
+
