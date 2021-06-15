@@ -16,20 +16,33 @@
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
+int state = 1;
+BLECharacteristic *pCharacteristic;
+
+ class callback: public BLECharacteristicCallbacks
+ {
+   public:
+   void onWrite(BLECharacteristic* pCharacteristic){
+     Serial.printf("value changed %d\n", *pCharacteristic->getData());
+   }
+ };
+
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting BLE work!");
 
-  BLEDevice::init("Long name works now");
+  BLEDevice::init("Stefan wzywa");
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
-  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+  pCharacteristic = pService->createCharacteristic(
                                          CHARACTERISTIC_UUID,
                                          BLECharacteristic::PROPERTY_READ |
                                          BLECharacteristic::PROPERTY_WRITE
                                        );
 
-  pCharacteristic->setValue("Hello World says Neil");
+  pCharacteristic->setCallbacks(new callback());
+  pCharacteristic->setValue(state);
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
@@ -43,5 +56,5 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(2000);
+  delay(2000);  
 }
