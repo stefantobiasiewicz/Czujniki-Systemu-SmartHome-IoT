@@ -38,9 +38,11 @@ void setup() {
   pCharacteristic = pService->createCharacteristic(
                                          CHARACTERISTIC_UUID,
                                          BLECharacteristic::PROPERTY_READ |
-                                         BLECharacteristic::PROPERTY_WRITE
+                                         BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY
+                                        | BLECharacteristic::PROPERTY_WRITE_NR
                                        );
 
+  pCharacteristic->setValue("hello");
   pCharacteristic->setCallbacks(new callback());
   pCharacteristic->setValue(state);
   pService->start();
@@ -56,5 +58,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(2000);  
+  delay(4000);  
+   pCharacteristic->setValue("hello2");
+
+   delay(4000);  
+   pCharacteristic->setValue("hello3");
+
+   delay(4000);  
+   pCharacteristic->setValue("hello4");
+  
+   delay(4000);  
+   pCharacteristic->setValue("hello5");
 }
