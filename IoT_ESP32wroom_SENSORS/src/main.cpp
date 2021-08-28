@@ -16,8 +16,16 @@
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
+#define CHARACTERISTIC_TEMP "bacdf072-0828-11ec-9a03-0242ac130003"
+#define CHARACTERISTIC_PRES "e67d52b2-0828-11ec-9a03-0242ac130003"
+#define CHARACTERISTIC_HUM "01d6a036-0829-11ec-9a03-0242ac130003"
+
 int state = 1;
 BLECharacteristic *pCharacteristic;
+
+BLECharacteristic *TempCharacteristic;
+BLECharacteristic *PresCharacteristic;
+BLECharacteristic *HumCharacteristic;
 
  class callback: public BLECharacteristicCallbacks
  {
@@ -35,16 +43,26 @@ void setup() {
   BLEDevice::init("Stefan wzywa");
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
-  pCharacteristic = pService->createCharacteristic(
-                                         CHARACTERISTIC_UUID,
-                                         BLECharacteristic::PROPERTY_READ |
-                                         BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY
-                                        | BLECharacteristic::PROPERTY_WRITE_NR
+
+
+  TempCharacteristic = pService->createCharacteristic(
+                                         CHARACTERISTIC_TEMP,
+                                         BLECharacteristic::PROPERTY_READ
+                                        | BLECharacteristic::PROPERTY_NOTIFY
                                        );
 
-  pCharacteristic->setValue("hello");
-  pCharacteristic->setCallbacks(new callback());
-  pCharacteristic->setValue(state);
+  PresCharacteristic = pService->createCharacteristic(
+                                         CHARACTERISTIC_PRES,
+                                         BLECharacteristic::PROPERTY_READ
+                                        | BLECharacteristic::PROPERTY_NOTIFY
+                                       );
+
+  HumCharacteristic = pService->createCharacteristic(
+                                         CHARACTERISTIC_HUM,
+                                         BLECharacteristic::PROPERTY_READ
+                                        | BLECharacteristic::PROPERTY_NOTIFY
+                                       );                                    
+
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
@@ -57,16 +75,13 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  delay(4000);  
-   pCharacteristic->setValue("hello2");
 
-   delay(4000);  
-   pCharacteristic->setValue("hello3");
-
-   delay(4000);  
-   pCharacteristic->setValue("hello4");
-  
-   delay(4000);  
-   pCharacteristic->setValue("hello5");
+  // raz na sekunde odczytać z czujnika
+  delay(1000);
+  float temp = (rand() % 200) / 10;
+  float hum = (rand() % 100) / 10;
+  float pres = (rand() % 2000) / 10;
+  TempCharacteristic->setValue(temp);
+  HumCharacteristic->setValue(hum);
+  PresCharacteristic->setValue(pres);
 }
