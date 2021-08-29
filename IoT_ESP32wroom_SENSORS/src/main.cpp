@@ -11,6 +11,8 @@
 #include <BLEServer.h>
 
 #include "EEPROM.h"
+#include <iostream>
+#include <string>  
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -119,7 +121,7 @@ void loop() {
   float temp = (rand() % 200) / 10;
   float hum = (rand() % 100) / 10;
   float pres = (rand() % 2000) / 10;
-  TempCharacteristic->setValue(temp);
-  HumCharacteristic->setValue(hum);
-  PresCharacteristic->setValue(pres);
+  TempCharacteristic->setValue(String(temp).c_str());
+  HumCharacteristic->setValue(String(hum).c_str());
+  PresCharacteristic->setValue(String(pres).c_str());
 }
