@@ -13,6 +13,7 @@
 #include "EEPROM.h"
 #include <iostream>
 #include <string>  
+#include "DHT.h"
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -28,6 +29,10 @@
 
 
 #define EEPROM_SIZE  100
+#define DHTPIN 25 
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
 
 int state = 1;
 BLECharacteristic *pCharacteristic;
@@ -61,12 +66,13 @@ class LocationCallback : public BLECharacteristicCallbacks
       reply += EEPROM.read(eeprom_adres+1 +i);
     }
     Serial.println(("read from eeprom "+reply).c_str());
-    pCharacteristic->setValue(reply);
+    pCharacteristic->setValue("");
   }
 };
 
 void setup() {
   Serial.begin(115200);
+  dht.begin();
   Serial.println("Starting BLE work!");
 
   EEPROM.begin(EEPROM_SIZE);  
@@ -118,10 +124,17 @@ void loop() {
 
   // raz na sekunde odczytać z czujnika
   delay(1000);
-  float temp = (rand() % 200) / 10;
-  float hum = (rand() % 100) / 10;
-  float pres = (rand() % 2000) / 10;
+  // float temp = (rand() % 200) / 10;
+  // float hum = (rand() % 100) / 10;
+  // float pres = (rand() % 2000) / 10;
+
+  float hum = dht.readHumidity();
+  // Read temperature as Celsius (the default)
+  float temp = dht.readTemperature();
+  // Read temperature as Fahrenheit (isFahrenheit = true)
+  float heatIndex = dht.computeHeatIndex(temp, hum, false);;
+
   TempCharacteristic->setValue(String(temp).c_str());
   HumCharacteristic->setValue(String(hum).c_str());
-  PresCharacteristic->setValue(String(pres).c_str());
+  PresCharacteristic->setValue(String(heatIndex).c_str());
 }
