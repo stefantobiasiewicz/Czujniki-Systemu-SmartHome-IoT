@@ -61,6 +61,10 @@ class LocationCallback : public BLECharacteristicCallbacks
 
   void onRead(BLECharacteristic* pCharacteristic){
     int len = EEPROM.read(eeprom_adres);
+    if(len == 0xff){
+      pCharacteristic->setValue("");
+      return;
+    }
     std::string reply;
     for(int i = 0 ; i < len ; i++){
       reply += EEPROM.read(eeprom_adres+1 +i);
