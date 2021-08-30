@@ -33,11 +33,11 @@ class MyCallback : public BLECharacteristicCallbacks
 {
   void onWrite(BLECharacteristic* pCharacteristic){
     std::string recived = pCharacteristic->getValue();
-    if(recived[0] == 1){
-      digitalWrite(LedPin,HIGH);
-    }
-    else if(recived[0] == 0){
+    if(recived == "true"){
       digitalWrite(LedPin,LOW);
+    }
+    else if(recived == "false"){
+      digitalWrite(LedPin,HIGH);
     }
   }
 
@@ -78,6 +78,7 @@ void setup() {
 
   EEPROM.begin(EEPROM_SIZE);
   pinMode(LedPin,OUTPUT);
+  digitalWrite(LedPin,HIGH);
 
   BLEDevice::init("SmartHome Relay");
   BLEServer *pServer = BLEDevice::createServer();
